@@ -1,5 +1,4 @@
 name: Cart
-
 on:
   push:
     branches:
@@ -7,7 +6,6 @@ on:
     paths:
       - 'cart/**'
       - '.github/workflows/cart.yaml'
-
 jobs:
   cart:
     name: Build and Deploy Cart Microservice
@@ -30,13 +28,11 @@ jobs:
         IMAGE=${{ secrets.ACR_NAME }}/cart:latest
         docker build -t $IMAGE ./cart
         docker push $IMAGE
-
     - name: Set Kubernetes context
       run: |
         az aks get-credentials --resource-group ${{ secrets.AKS_RG }} \
                                --name ${{ secrets.AKS_NAME }} \
                                --overwrite-existing
-
     - name: Deploy to AKS using Helm
       run: |
         helm upgrade --install cart ./AKS/helm/cart \
