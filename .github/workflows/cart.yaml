@@ -25,7 +25,7 @@ jobs:
 
     - name: Build and Push Docker Image to ACR
       run: |
-        IMAGE=${{ secrets.ACR_NAME }}/cart:latest
+        IMAGE=${{ secrets.ACR_NAME }}.azurecr.io/cart:latest
         docker build -t $IMAGE ./cart
         docker push $IMAGE
     - name: Set Kubernetes context
