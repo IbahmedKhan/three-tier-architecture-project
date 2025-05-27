@@ -10,11 +10,11 @@ on:
 
 jobs:
   cart:
-    name: Build and deploy cart microservice
+    name: Build and Deploy Cart Microservice
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code 
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Login to Azure
@@ -22,22 +22,22 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Login to ACR
+    - name: Login to Azure Container Registry (ACR)
       run: az acr login --name ${{ secrets.ACR_NAME }}
 
-    - name: Build and Push Docker Image
+    - name: Build and Push Docker Image to ACR
       run: |
         IMAGE=${{ secrets.ACR_NAME }}/cart:latest
         docker build -t $IMAGE ./cart
         docker push $IMAGE
 
-    - name: Set AKS context
+    - name: Set Kubernetes context
       run: |
         az aks get-credentials --resource-group ${{ secrets.AKS_RG }} \
                                --name ${{ secrets.AKS_NAME }} \
                                --overwrite-existing
 
-    - name: Deploy to AKS with Helm
+    - name: Deploy to AKS using Helm
       run: |
         helm upgrade --install cart ./AKS/helm/cart \
           --set image.repository=${{ secrets.ACR_NAME }}/cart \
